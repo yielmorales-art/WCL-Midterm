@@ -1,0 +1,1561 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Literary Studies Reviewer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --parchment: #f5efe3;
+        --cream: #faf6ee;
+        --gold: #c8922a;
+        --rust: #a63d2f;
+        --sage: #4a6741;
+        --slate: #3d4f5c;
+        --soft: #e8dfc8;
+        --muted: #7a6e5f;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--cream);
+        color: var(--ink);
+        font-family: "Lora", Georgia, serif;
+        min-height: 100vh;
+      }
+
+      /* Decorative top bar */
+      .topbar {
+        background: var(--ink);
+        height: 4px;
+        background: repeating-linear-gradient(
+          90deg,
+          var(--gold) 0px,
+          var(--gold) 30px,
+          var(--ink) 30px,
+          var(--ink) 32px
+        );
+      }
+
+      header {
+        background: var(--ink);
+        color: var(--parchment);
+        padding: 2.5rem 2rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "❧";
+        position: absolute;
+        font-size: 18rem;
+        opacity: 0.04;
+        top: -3rem;
+        left: -2rem;
+        color: var(--gold);
+        pointer-events: none;
+      }
+
+      header h1 {
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 1.1;
+        margin-bottom: 0.4rem;
+      }
+
+      header p {
+        font-family: "DM Mono", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        color: var(--gold);
+        text-transform: uppercase;
+        margin-top: 0.5rem;
+      }
+
+      nav {
+        display: flex;
+        gap: 0;
+        background: var(--soft);
+        border-bottom: 2px solid var(--ink);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      nav button {
+        font-family: "DM Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.85rem 1.4rem;
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        border-right: 1px solid #d4c9b0;
+        white-space: nowrap;
+        transition: all 0.2s;
+        position: relative;
+      }
+
+      nav button::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gold);
+        transform: scaleX(0);
+        transition: transform 0.2s;
+      }
+
+      nav button:hover {
+        color: var(--ink);
+        background: rgba(200, 146, 42, 0.08);
+      }
+      nav button.active {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      nav button.active::after {
+        transform: scaleX(1);
+      }
+
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      /* === NOTES === */
+      .session-card {
+        background: white;
+        border: 1px solid #ddd5be;
+        border-radius: 2px;
+        margin-bottom: 1.5rem;
+        box-shadow: 2px 2px 0 #e0d5c0;
+        overflow: hidden;
+      }
+
+      .session-header {
+        background: var(--ink);
+        color: var(--parchment);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .session-header h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .session-header .tag {
+        font-family: "DM Mono", monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        color: var(--gold);
+        text-transform: uppercase;
+      }
+
+      .session-body {
+        padding: 1.5rem;
+        display: none;
+      }
+
+      .session-body.open {
+        display: block;
+      }
+
+      .session-body h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 1rem;
+        color: var(--rust);
+        margin: 1.2rem 0 0.5rem;
+        border-left: 3px solid var(--gold);
+        padding-left: 0.6rem;
+      }
+
+      .session-body h3:first-child {
+        margin-top: 0;
+      }
+
+      .session-body p {
+        font-size: 0.92rem;
+        line-height: 1.75;
+        color: #3a3228;
+        margin-bottom: 0.7rem;
+      }
+
+      .session-body ul {
+        padding-left: 1.3rem;
+        margin-bottom: 0.7rem;
+      }
+
+      .session-body ul li {
+        font-size: 0.92rem;
+        line-height: 1.7;
+        color: #3a3228;
+        margin-bottom: 0.3rem;
+      }
+
+      .quote-block {
+        background: var(--parchment);
+        border-left: 4px solid var(--gold);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-style: italic;
+        font-size: 0.9rem;
+        line-height: 1.8;
+        color: #4a3f30;
+      }
+
+      .key-term {
+        display: inline-block;
+        background: var(--ink);
+        color: var(--gold);
+        font-family: "DM Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        padding: 0.15rem 0.5rem;
+        border-radius: 2px;
+        margin: 0.2rem 0.1rem;
+        text-transform: uppercase;
+      }
+
+      /* === QUIZ SECTION === */
+      .quiz-section {
+        display: none;
+      }
+      .quiz-section.active {
+        display: block;
+      }
+
+      .section-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.6rem;
+        margin-bottom: 0.3rem;
+        color: var(--ink);
+      }
+
+      .section-sub {
+        font-family: "DM Mono", monospace;
+        font-size: 0.72rem;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 1.8rem;
+      }
+
+      .q-card {
+        background: white;
+        border: 1px solid #ddd5be;
+        border-radius: 2px;
+        padding: 1.4rem 1.5rem;
+        margin-bottom: 1.2rem;
+        box-shadow: 2px 2px 0 #e8dfc8;
+      }
+
+      .q-num {
+        font-family: "DM Mono", monospace;
+        font-size: 0.68rem;
+        color: var(--gold);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+      }
+
+      .q-text {
+        font-size: 0.95rem;
+        line-height: 1.65;
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .option-btn {
+        text-align: left;
+        background: var(--cream);
+        border: 1.5px solid #d4c9b0;
+        border-radius: 2px;
+        padding: 0.6rem 1rem;
+        font-family: "Lora", serif;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: all 0.15s;
+        color: var(--ink);
+      }
+
+      .option-btn:hover {
+        background: var(--soft);
+        border-color: var(--gold);
+      }
+      .option-btn.correct {
+        background: #eaf5e8;
+        border-color: var(--sage);
+        color: var(--sage);
+        font-weight: 600;
+      }
+      .option-btn.wrong {
+        background: #fbeae8;
+        border-color: var(--rust);
+        color: var(--rust);
+      }
+      .option-btn:disabled {
+        cursor: default;
+      }
+
+      .feedback {
+        margin-top: 0.7rem;
+        font-size: 0.85rem;
+        font-style: italic;
+        color: var(--muted);
+        display: none;
+        line-height: 1.5;
+      }
+
+      .feedback.show {
+        display: block;
+      }
+
+      .quiz-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .score-badge {
+        font-family: "DM Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .btn {
+        font-family: "DM Mono", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.6rem 1.4rem;
+        border: 2px solid var(--ink);
+        background: var(--ink);
+        color: var(--parchment);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .btn:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+      }
+      .btn.outline {
+        background: transparent;
+        color: var(--ink);
+      }
+      .btn.outline:hover {
+        background: var(--ink);
+        color: var(--parchment);
+      }
+
+      /* === MATCHING === */
+      .matching-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .match-col-title {
+        font-family: "DM Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 0.7rem;
+        border-bottom: 1px solid var(--soft);
+        padding-bottom: 0.4rem;
+      }
+
+      .match-item {
+        background: white;
+        border: 1.5px solid #d4c9b0;
+        border-radius: 2px;
+        padding: 0.7rem 1rem;
+        font-size: 0.88rem;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        transition: all 0.15s;
+        line-height: 1.4;
+        min-height: 3rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .match-item:hover {
+        border-color: var(--gold);
+        background: var(--parchment);
+      }
+      .match-item.selected {
+        border-color: var(--slate);
+        background: #eef2f5;
+      }
+      .match-item.matched {
+        border-color: var(--sage);
+        background: #eaf5e8;
+        color: var(--sage);
+        cursor: default;
+      }
+      .match-item.wrong-match {
+        border-color: var(--rust);
+        background: #fbeae8;
+        animation: shake 0.3s;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-6px);
+        }
+        75% {
+          transform: translateX(6px);
+        }
+      }
+
+      .match-letter {
+        font-family: "DM Mono", monospace;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--gold);
+        margin-right: 0.6rem;
+        min-width: 1.2rem;
+      }
+
+      .match-result {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: var(--parchment);
+        border: 1px solid #d4c9b0;
+        font-size: 0.88rem;
+        line-height: 1.7;
+        display: none;
+      }
+
+      .match-result.show {
+        display: block;
+      }
+
+      .progress-bar {
+        height: 4px;
+        background: var(--soft);
+        margin-bottom: 1.5rem;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--gold);
+        transition: width 0.4s ease;
+      }
+
+      .tab-icon {
+        margin-right: 0.4rem;
+      }
+
+      @media (max-width: 600px) {
+        .matching-grid {
+          grid-template-columns: 1fr;
+        }
+        nav button {
+          padding: 0.7rem 1rem;
+          font-size: 0.65rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar"></div>
+    <header>
+      <h1>Literary Studies<br /><em>Course Reviewer</em></h1>
+      <p>Sessions 5 · 6 · 7 · 12 &nbsp;|&nbsp; Quizon, PhD</p>
+    </header>
+
+    <nav>
+      <button class="active" onclick="showTab('notes')">Notes</button>
+      <button onclick="showTab('mcq')">Multiple Choice</button>
+      <button onclick="showTab('matching')">Matching Type</button>
+    </nav>
+
+    <main>
+      <!-- ==================== NOTES ==================== -->
+      <div id="tab-notes">
+        <div class="session-card">
+          <div class="session-header" onclick="toggleSession(this)">
+            <h2>Session 5 — Affect and Poetry</h2>
+            <span class="tag">Shikibu · Sarton · Alunan ▾</span>
+          </div>
+          <div class="session-body open">
+            <h3>What is a Poem?</h3>
+            <p>
+              Poems use <strong>condensed, artistic language</strong> to express
+              ideas, feelings, or stories. Unlike prose, poems rely on rhythm
+              and sound as much as literal meaning.
+            </p>
+            <p><strong>Key Characteristics:</strong></p>
+            <ul>
+              <li>
+                <strong>Structure:</strong> Written in lines (verses) grouped
+                into stanzas.
+              </li>
+              <li>
+                <strong>Musicality:</strong> Uses meter and rhyme for a musical
+                quality.
+              </li>
+              <li>
+                <strong>Imagery:</strong> Sensory language that "paints a
+                picture."
+              </li>
+              <li>
+                <strong>Figurative Language:</strong> Metaphors, similes —
+                create deeper meaning.
+              </li>
+            </ul>
+
+            <h3>Defamiliarization (Ostranenie)</h3>
+            <p>
+              To take an ordinary experience and present it as
+              <em>strange, new, or unfamiliar</em> — making the reader see it
+              with fresh eyes.
+            </p>
+
+            <h3>Izumi Shikibu</h3>
+            <div class="quote-block">
+              "In this world, love has no color. / Yet, how deeply / my body is
+              stained / by yours."
+            </div>
+            <p>
+              A Japanese poet of the Heian period. The poem uses
+              defamiliarization to show love as an invisible yet deeply physical
+              force.
+            </p>
+
+            <h3>Merlie Alunan — "We Kept a Jarful of Keys"</h3>
+            <p>
+              Known as the <strong>"Mother of Waray-waray Poetry"</strong>;
+              advocates writing in Visayan mother tongues (Waray-waray,
+              Cebuano). Her poem explores <strong>regret</strong> — how objects
+              (keys) hold memory and loss.
+            </p>
+
+            <h3>May Sarton — "Autumn Sonnet"</h3>
+            <p><strong>What is a Sonnet?</strong></p>
+            <ul>
+              <li>Exactly <strong>14 lines</strong> in iambic pentameter</li>
+              <li>Set <strong>rhyme scheme</strong> (varies by type)</li>
+              <li>Focuses on a single idea: love, beauty, time, mortality</li>
+              <li>
+                Features a <strong>Volta (Turn)</strong> — a shift in tone or
+                argument
+              </li>
+            </ul>
+            <p>
+              The poem explores love entailing sacrifice. Aristotle argued the
+              highest narrative form is <strong>tragedy</strong> — evoking pity
+              and fear, providing <em>catharsis</em>. Does love that requires
+              sacrifice become tragic?
+            </p>
+            <div style="margin-top: 0.8rem">
+              <span class="key-term">Defamiliarization</span>
+              <span class="key-term">Ostranenie</span>
+              <span class="key-term">Sonnet</span>
+              <span class="key-term">Volta</span>
+              <span class="key-term">Catharsis</span>
+              <span class="key-term">Iambic Pentameter</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="session-card">
+          <div class="session-header" onclick="toggleSession(this)">
+            <h2>Session 6 — Spaces of Terror & Sympathy</h2>
+            <span class="tag">Wislawa Szymborska ▾</span>
+          </div>
+          <div class="session-body">
+            <h3>"Photograph from September 11" — Szymborska</h3>
+            <div class="quote-block">
+              "They jumped from the burning floors— / one, two, a few more, /
+              higher, lower. / The photograph halted them in life, / and now
+              keeps them / above the earth toward the earth... / I can do only
+              two things for them— / describe this flight / and not add a last
+              line."
+            </div>
+            <p>
+              Szymborska's poem responds to Richard Drew's
+              <em>"The Falling Man"</em> photograph (Sept. 11, 2001). The poem
+              refuses to give the subjects a "last line" — preserving them in
+              suspended life rather than allowing death to define them.
+            </p>
+
+            <h3>Politics of Gaze</h3>
+            <ul>
+              <li>
+                <strong>Positionality:</strong> Who is looking? From what
+                vantage point? What is the object of inquiry?
+              </li>
+              <li>
+                <strong>Disasters and Sympathy:</strong> Who owns the story?
+                Questions of subjectivity and vulnerability.
+              </li>
+              <li>
+                <strong>Solidarity and Empathy:</strong> Toward a more
+                compassionate world.
+              </li>
+              <li>
+                <strong>Convergence of Arts:</strong> Photo|Graphs — art
+                fossilized in space and time.
+              </li>
+            </ul>
+
+            <h3>Literature of / in / as Photography</h3>
+            <p>
+              The session explores how literature and photography intersect:
+              photography can be read as text, and literature can capture the
+              stillness and immediacy of a photograph.
+            </p>
+
+            <h3>Historical Atrocity Images</h3>
+            <p>
+              The session also examined photographs of Philippine history — the
+              First Battle of Bud Dajo (1906) and the Rape of Manila (WWII,
+              1945) — raising questions about
+              <strong>who owns traumatic images</strong> and how the gaze of the
+              conqueror frames the narrative of the conquered.
+            </p>
+
+            <h3>Central Question</h3>
+            <p>
+              <em
+                >"How do we measure the potency of words, of images — of
+                art?"</em
+              >
+            </p>
+            <div style="margin-top: 0.8rem">
+              <span class="key-term">Gaze</span>
+              <span class="key-term">Positionality</span>
+              <span class="key-term">Sympathy</span>
+              <span class="key-term">Empathy</span>
+              <span class="key-term">Solidarity</span>
+              <span class="key-term">Photo|Graphs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="session-card">
+          <div class="session-header" onclick="toggleSession(this)">
+            <h2>Session 7 — Philippine Labour Migration</h2>
+            <span class="tag">Merlinda Bobis ▾</span>
+          </div>
+          <div class="session-body">
+            <h3>Merlinda Bobis — Background</h3>
+            <p>
+              Filipino-Australian author whose
+              <strong>multicultural heritage</strong> shapes her storytelling.
+              Known for richly <strong>poetic prose</strong> and themes of
+              migration, identity, displacement, and belonging.
+            </p>
+
+            <h3>"The Sadness Collector" — Plot & Context</h3>
+            <p>
+              Centers on <strong>Rica</strong>, a young girl whose mother has
+              left the Philippines to work in Paris as a domestic helper (on a
+              fake visa). The father struggles emotionally. The magical figure
+              of <strong>Big Lady</strong> — a doll-like entity — absorbs the
+              family's grief.
+            </p>
+            <div class="quote-block">
+              "A whisper of salt, even the smallest nudge to the palate, can
+              betray a century of hidden grief... It is this residual
+              contamination, our individual portions of grief, that she eats, so
+              we do not die from them."
+            </div>
+
+            <h3>Narrative Techniques</h3>
+            <ul>
+              <li>
+                <strong>Nonlinear Structure:</strong> Alternates past and
+                present; reflects memory's cyclical nature.
+              </li>
+              <li>
+                <strong>Limited Third-Person POV:</strong> Close to Rica's
+                internal feelings; creates intimacy.
+              </li>
+              <li>
+                <strong>Pacing:</strong> Balances high tension with calm; time
+                shifts mark emotional journey.
+              </li>
+              <li>
+                <strong>Symbolism:</strong> Big Lady = emotional labor and the
+                collective grief of the diaspora. The pink décor = "bravado"
+                masking poverty and longing.
+              </li>
+            </ul>
+
+            <h3>Major Themes</h3>
+            <ul>
+              <li>
+                <strong>Migration & Diaspora:</strong> OFW experience; cultural
+                displacement.
+              </li>
+              <li>
+                <strong>Family Separation:</strong> Emotional toll on children
+                left behind.
+              </li>
+              <li>
+                <strong>Emotional Suppression:</strong> Characters suppress
+                grief to survive.
+              </li>
+              <li>
+                <strong>Emotional Labor:</strong> The cost of maintaining
+                cultural and personal connections across distance.
+              </li>
+            </ul>
+            <div style="margin-top: 0.8rem">
+              <span class="key-term">Diaspora</span>
+              <span class="key-term">OFW</span>
+              <span class="key-term">Nonlinear Narrative</span>
+              <span class="key-term">Symbolism</span>
+              <span class="key-term">Emotional Labor</span>
+              <span class="key-term">Poetic Prose</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="session-card">
+          <div class="session-header" onclick="toggleSession(this)">
+            <h2>Session 12 — The Invention of the Sexual Self</h2>
+            <span class="tag">Michel Foucault ▾</span>
+          </div>
+          <div class="session-body">
+            <h3>The "Commonsense" Story (That Foucault Challenges)</h3>
+            <p>
+              The popular belief: sex was open in the 17th century → Victorians
+              made it taboo → we are now "liberating" ourselves. Foucault calls
+              this the <strong>Repressive Hypothesis</strong>.
+            </p>
+
+            <h3>The Repressive Hypothesis</h3>
+            <p>
+              The belief that power's only relationship to sex is to say
+              <strong>"No"</strong> — through laws, censorship, prohibitions.
+              Foucault counters: if sex is so repressed, why has there been a
+              massive <strong>"discursive explosion"</strong> (explosion of talk
+              about sex) since the 1700s?
+            </p>
+
+            <h3>Power as Productive (Biopower)</h3>
+            <ul>
+              <li>
+                <strong>Old View (Juridico-Discursive):</strong> Power = a
+                limit, a prohibition.
+              </li>
+              <li>
+                <strong>New View (Biopower):</strong> Power produces life,
+                health, and categories.
+              </li>
+              <li>
+                Power doesn't hide sex — it <em>demands</em> we find, name, and
+                study it.
+              </li>
+            </ul>
+
+            <h3>The Perverse Implantation</h3>
+            <p>
+              Before 18th century: "Sodomy" was a forbidden <em>act</em> (like
+              theft). After 18th century: "The Homosexual" became a
+              <em>species</em> — a personality type, an identity.
+            </p>
+            <p><strong>Four Strategic Directions of Power over Sex:</strong></p>
+            <ul>
+              <li>
+                <strong>Hysterization:</strong> The female body defined by its
+                reproductive system.
+              </li>
+              <li>
+                <strong>Pedagogization:</strong> Obsession with children's
+                "secret" habits (masturbation).
+              </li>
+              <li>
+                <strong>Socialization:</strong> Using sex to manage birth rates
+                and population.
+              </li>
+              <li>
+                <strong>Psychiatrization:</strong> Creation of clinical lists of
+                "perversions."
+              </li>
+            </ul>
+
+            <h3>Ars Erotica vs. Scientia Sexualis</h3>
+            <ul>
+              <li>
+                <strong>Ars Erotica (Ancient/Eastern):</strong> Pleasure is a
+                secret passed master to student. Goal: increase intensity of
+                pleasure.
+              </li>
+              <li>
+                <strong>Scientia Sexualis (Modern/Western):</strong> Truth is
+                found by confessing to an expert. Goal: reveal the "truth" of
+                who you are.
+              </li>
+            </ul>
+
+            <h3>The Spiral of Power and Pleasure</h3>
+            <p>
+              Talking about sex feels like freedom, but it binds us more tightly
+              to medical and state categories. We are caught in a cycle — the
+              doctor's pleasure in "finding" secrets, the patient's pleasure in
+              "revealing" themselves.
+            </p>
+            <div class="quote-block">
+              "If the 'truth' of your soul is your sexuality, who gave you that
+              truth?"
+            </div>
+            <div style="margin-top: 0.8rem">
+              <span class="key-term">Repressive Hypothesis</span>
+              <span class="key-term">Biopower</span>
+              <span class="key-term">Discursive Explosion</span>
+              <span class="key-term">Perverse Implantation</span>
+              <span class="key-term">Ars Erotica</span>
+              <span class="key-term">Scientia Sexualis</span>
+              <span class="key-term">Hysterization</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end notes -->
+
+      <!-- ==================== MCQ ==================== -->
+      <div id="tab-mcq" class="quiz-section">
+        <h2 class="section-title">Multiple Choice</h2>
+        <p class="section-sub">Select the best answer · Instant feedback</p>
+        <div class="progress-bar">
+          <div class="progress-fill" id="mcq-progress" style="width: 0%"></div>
+        </div>
+        <div
+          id="mcq-score-display"
+          style="
+            font-family: &quot;DM Mono&quot;, monospace;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+          "
+        >
+          Score: <span id="mcq-score">0</span> /
+          <span id="mcq-total">0</span> answered
+        </div>
+        <div id="mcq-container"></div>
+        <div class="quiz-controls">
+          <span class="score-badge" id="mcq-final"></span>
+          <button class="btn outline" onclick="resetMCQ()">↺ Reset Quiz</button>
+        </div>
+      </div>
+
+      <!-- ==================== MATCHING ==================== -->
+      <div id="tab-matching" class="quiz-section">
+        <h2 class="section-title">Matching Type</h2>
+        <p class="section-sub">Click a term, then click its definition</p>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            id="match-progress"
+            style="width: 0%"
+          ></div>
+        </div>
+        <div
+          id="match-score-display"
+          style="
+            font-family: &quot;DM Mono&quot;, monospace;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+          "
+        >
+          Matched: <span id="match-score">0</span> /
+          <span id="match-total">0</span>
+        </div>
+        <div id="matching-container"></div>
+        <div class="quiz-controls">
+          <span class="score-badge" id="match-final"></span>
+          <button class="btn outline" onclick="resetMatching()">↺ Reset</button>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // ===================== TABS =====================
+      function showTab(id) {
+        ["notes", "mcq", "matching"].forEach((t) => {
+          document.getElementById("tab-" + t)?.classList.remove("active");
+        });
+        document
+          .querySelectorAll("nav button")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("tab-" + id)?.classList.add("active");
+        event.currentTarget.classList.add("active");
+        if (id === "notes")
+          document.getElementById("tab-notes").style.display = "block";
+      }
+
+      // Show notes tab by default
+      document.getElementById("tab-notes").style.display = "block";
+
+      function toggleSession(header) {
+        const body = header.nextElementSibling;
+        body.classList.toggle("open");
+      }
+
+      // ===================== MCQ DATA =====================
+      const mcqData = [
+        {
+          q: "What literary technique presents familiar things in a strange or unfamiliar way?",
+          opts: [
+            "Volta",
+            "Defamiliarization",
+            "Iambic Pentameter",
+            "Catharsis",
+          ],
+          ans: 1,
+          exp: "Defamiliarization (ostranenie) presents everyday experiences as strange and new, giving the reader fresh eyes.",
+        },
+        {
+          q: "How many lines does a traditional sonnet have?",
+          opts: ["10", "12", "14", "16"],
+          ans: 2,
+          exp: "All traditional sonnets consist of exactly 14 lines in iambic pentameter.",
+        },
+        {
+          q: "Merlie Alunan is known as the 'Mother of' which literary tradition?",
+          opts: [
+            "Tagalog Poetry",
+            "Waray-waray Poetry",
+            "Cebuano Novel",
+            "Filipino Haiku",
+          ],
+          ans: 1,
+          exp: "Alunan advocates writing in Visayan mother tongues and is known as the 'Mother of Waray-waray Poetry.'",
+        },
+        {
+          q: "In Szymborska's 'Photograph from September 11,' what does the poet say she can do for the falling figures?",
+          opts: [
+            "Pray for them",
+            "Name them one by one",
+            "Describe their flight and not add a last line",
+            "Photograph them herself",
+          ],
+          ans: 2,
+          exp: "The poet says she can only describe their flight and not add a last line — refusing a final line preserves them in suspended life rather than allowing death to define them.",
+        },
+        {
+          q: "The 'Politics of Gaze' asks primarily about:",
+          opts: [
+            "Camera technology",
+            "Who is looking and from what vantage point",
+            "Government surveillance",
+            "The history of film",
+          ],
+          ans: 1,
+          exp: "Positionality — who is looking, from which vantage point, and what the object of inquiry is — defines the politics of gaze.",
+        },
+        {
+          q: "In 'The Sadness Collector,' what does the figure of Big Lady symbolize?",
+          opts: [
+            "Rica's absent mother",
+            "A Parisian fashion doll",
+            "The collective grief of the diaspora and emotional labor",
+            "A childhood imaginary friend",
+          ],
+          ans: 2,
+          exp: "Big Lady absorbs the family's sadness so they do not die from it — she symbolizes the collective grief of the Filipino diaspora and the emotional labor involved.",
+        },
+        {
+          q: "What narrative technique does Merlinda Bobis use in 'The Sadness Collector' to reflect memory's cyclical nature?",
+          opts: [
+            "Stream of consciousness",
+            "Omniscient narrator",
+            "Nonlinear narrative",
+            "Epistolary form",
+          ],
+          ans: 2,
+          exp: "The story uses a nonlinear structure alternating between past and present, enhancing emotional depth and showing memory's cyclical nature.",
+        },
+        {
+          q: "Foucault's 'Repressive Hypothesis' refers to the belief that:",
+          opts: [
+            "Sex was always discussed openly",
+            "Power's only relation to sex is prohibition and silence",
+            "Victorian morality was healthy",
+            "Sexuality is a biological instinct",
+          ],
+          ans: 1,
+          exp: "The Repressive Hypothesis is the belief that power's relationship to sex is purely to say 'No' — through laws, censorship, and prohibitions.",
+        },
+        {
+          q: "According to Foucault, 'Biopower' differs from older juridico-discursive power in that it:",
+          opts: [
+            "Bans all sexual discussion",
+            "Produces and categorizes life, health, and identities",
+            "Is exercised only by monarchs",
+            "Focuses only on criminal punishment",
+          ],
+          ans: 1,
+          exp: "Biopower is 'productive' — it creates categories, manages populations, and demands that sex be found, named, and studied.",
+        },
+        {
+          q: "Before the 18th century, 'sodomy' was treated as:",
+          opts: [
+            "A personality type or identity",
+            "A biological condition",
+            "A forbidden act, similar to theft",
+            "A medical illness to be cured",
+          ],
+          ans: 2,
+          exp: "Pre-18th century, sodomy was a forbidden act. Post-18th century, power shifted to creating identity categories like 'the homosexual' as a species.",
+        },
+        {
+          q: "Which of Foucault's 'four strategic directions' refers to the obsession with children's secret sexual habits?",
+          opts: [
+            "Hysterization",
+            "Socialization",
+            "Psychiatrization",
+            "Pedagogization",
+          ],
+          ans: 3,
+          exp: "Pedagogization refers to the obsession with children's 'secret' habits, especially masturbation, as a matter requiring adult intervention.",
+        },
+        {
+          q: "In Foucault's framework, 'Ars Erotica' is characterized by:",
+          opts: [
+            "Confessing to medical experts",
+            "Scientific classification of desires",
+            "Pleasure as a secret passed from master to student",
+            "State regulation of reproduction",
+          ],
+          ans: 2,
+          exp: "Ars Erotica (Ancient/Eastern tradition): pleasure is a secret transmitted from master to student, with the goal of increasing the intensity of pleasure.",
+        },
+        {
+          q: "What Aristotelian concept describes the emotional release of pity and fear experienced through tragedy?",
+          opts: ["Volta", "Catharsis", "Ostranenie", "Biopower"],
+          ans: 1,
+          exp: "Catharsis (or purgation) is Aristotle's term for the emotional outlet — the release of pity and fear — that tragedy produces in its audience.",
+        },
+        {
+          q: "The 'Volta' in a sonnet refers to:",
+          opts: [
+            "The final couplet's rhyme",
+            "A shift in tone, argument, or perspective",
+            "The iambic rhythm pattern",
+            "The poem's central metaphor",
+          ],
+          ans: 1,
+          exp: "The Volta (Italian for 'turn') is a shift in the sonnet's tone, argument, or perspective that helps resolve or develop the poem's central idea.",
+        },
+        {
+          q: "Rica's mother in 'The Sadness Collector' is working in Paris as:",
+          opts: [
+            "A fashion designer",
+            "A nurse",
+            "A domestic helper on a fake visa",
+            "A restaurant cook",
+          ],
+          ans: 2,
+          exp: "Rica's mother left to work as a domestic helper in Paris on a fake visa, representing the reality of undocumented Filipino overseas workers.",
+        },
+        {
+          q: "Which poetic meter consists of alternating unstressed and stressed syllables, ten per line?",
+          opts: [
+            "Trochaic tetrameter",
+            "Iambic pentameter",
+            "Dactylic hexameter",
+            "Anapestic trimeter",
+          ],
+          ans: 1,
+          exp: "Iambic pentameter has five iambic feet per line (ten syllables), alternating unstressed and stressed — the standard meter of the sonnet.",
+        },
+        {
+          q: "Aristotle considered tragedy the highest form of narrative because it reveals:",
+          opts: [
+            "The beauty of nature",
+            "The highest human capacity — sacrifice",
+            "The structure of language",
+            "The power of the state",
+          ],
+          ans: 1,
+          exp: "Aristotle argued tragedy is the highest narrative form because it explores the highest human capacity — sacrifice — and evokes pity and fear, providing catharsis.",
+        },
+        {
+          q: "What is the primary theme explored in Izumi Shikibu's poem 'In this world, love has no color'?",
+          opts: [
+            "The invisibility of grief",
+            "The visible yet invisible stain of love",
+            "The seasons of longing",
+            "The pain of political exile",
+          ],
+          ans: 1,
+          exp: "Shikibu uses defamiliarization to show love as colorless yet deeply physical — it stains the body even though it cannot be seen.",
+        },
+        {
+          q: "The photograph 'The Falling Man' was taken by:",
+          opts: [
+            "Wislawa Szymborska",
+            "Clare Cavanagh",
+            "Richard Drew",
+            "Merlinda Bobis",
+          ],
+          ans: 2,
+          exp: "Richard Drew, an Associated Press photographer, took the iconic photograph known as 'The Falling Man' on September 11, 2001.",
+        },
+        {
+          q: "Which of the following best describes Merlinda Bobis's literary style?",
+          opts: [
+            "Spare, minimalist prose",
+            "Richly poetic, emotionally vivid prose",
+            "Hard-boiled realism",
+            "Satirical political commentary",
+          ],
+          ans: 1,
+          exp: "Bobis is noted for richly poetic language that draws readers into vivid, emotional experiences — often called 'poetic prose.'",
+        },
+        {
+          q: "Foucault argues that since the 1700s there has been a 'discursive explosion' about sex. This means:",
+          opts: [
+            "Sex became completely forbidden in public",
+            "There was a massive increase in discourse and talk about sex",
+            "Medical science stopped studying sexuality",
+            "The church gained total control over sexuality",
+          ],
+          ans: 1,
+          exp: "Foucault's counter-argument to the Repressive Hypothesis: if sex were truly repressed, why has there been an explosion of discussion about it since the 18th century?",
+        },
+        {
+          q: "Which of Foucault's four strategic directions involves managing birth rates and population through sex?",
+          opts: [
+            "Hysterization",
+            "Pedagogization",
+            "Socialization",
+            "Psychiatrization",
+          ],
+          ans: 2,
+          exp: "Socialization refers to the use of sex to manage birth rates and population — linking sexuality to national and social governance.",
+        },
+        {
+          q: "In 'The Sadness Collector,' the pink decor of Rica's room is described as 'pink bravado.' This suggests:",
+          opts: [
+            "Rica's cheerful personality",
+            "A superficial cheerfulness masking poverty and longing",
+            "The influence of French fashion",
+            "Rica's mother's decorating taste",
+          ],
+          ans: 1,
+          exp: "The pink decor — dancing ladies, Barbie dolls, paper rabbits — is described as 'bravado,' a performance of happiness that conceals the warped ceiling, stained floor, and emotional emptiness.",
+        },
+        {
+          q: "What does Szymborska's refusal to 'add a last line' to her poem enact?",
+          opts: [
+            "An admission of poetic failure",
+            "A preservation of the subjects' lives in suspended time",
+            "A political protest against the US government",
+            "A critique of Richard Drew's photograph",
+          ],
+          ans: 1,
+          exp: "By refusing a last line, Szymborska keeps the falling figures suspended in life — the poem does not let them hit the ground or be defined by their death.",
+        },
+        {
+          q: "Which session introduces the concept of 'Scientia Sexualis' as a distinctly modern Western practice?",
+          opts: ["Session 5", "Session 6", "Session 7", "Session 12"],
+          ans: 3,
+          exp: "Session 12 covers Foucault's History of Sexuality Vol. 1, which introduces Scientia Sexualis as the modern Western approach of confessing sexual truth to experts.",
+        },
+        {
+          q: "Which of the following is NOT one of the key characteristics of a poem as discussed in Session 5?",
+          opts: [
+            "Structure in lines and stanzas",
+            "Use of a reliable narrator",
+            "Imagery and sensory language",
+            "Figurative language like metaphor",
+          ],
+          ans: 1,
+          exp: "A reliable narrator is a narrative prose concept, not a defining characteristic of poetry. Poems are defined by structure, musicality, imagery, and figurative language.",
+        },
+        {
+          q: "The 'Speaker's Benefit' in Foucault's argument refers to:",
+          opts: [
+            "The financial gain of publishing about sex",
+            "The feeling of subversion or transgression one gets from speaking about sex",
+            "The medical authority granted to psychiatrists",
+            "The right of citizens to discuss private matters",
+          ],
+          ans: 1,
+          exp: "The 'Speaker's Benefit' is the feeling that talking about sex makes one a revolutionary or subversive — Foucault argues this feeling is an illusion that keeps us tied to power's categories.",
+        },
+        {
+          q: "In the context of Session 6, 'solidarity' in response to traumatic images means:",
+          opts: [
+            "Taking legal action against perpetrators",
+            "Moving toward a more compassionate, connected world through shared witness",
+            "Distributing images as widely as possible",
+            "Keeping traumatic images from public view",
+          ],
+          ans: 1,
+          exp: "The session frames solidarity as a response to the politics of gaze — using shared witnessing of tragedy to foster empathy and move toward a more compassionate world.",
+        },
+        {
+          q: "Merlie Alunan's poem 'We Kept a Jarful of Keys' is primarily concerned with which emotion?",
+          opts: ["Joy", "Anger", "Regret", "Fear"],
+          ans: 2,
+          exp: "The poem uses the image of a jar full of keys — objects that once opened something now inaccessible — as a meditation on regret and loss.",
+        },
+        {
+          q: "In Bobis's story, what does Rica do to try to suppress her sadness before her father comes home?",
+          opts: [
+            "She reads her mother's letters",
+            "She watches TV",
+            "She plays with Big Lady directly",
+            "She falls asleep early",
+          ],
+          ans: 1,
+          exp: "Rica watches TV to forget and make sure her tears do not amount to a mouthful — a strategy to suppress her grief so Big Lady does not have too much to absorb.",
+        },
+        {
+          q: "Foucault's concept of 'Hysterization' refers to:",
+          opts: [
+            "The clinical diagnosis of hysteria as a mental illness",
+            "Defining the female body entirely through its reproductive function",
+            "The use of hypnosis in early psychiatry",
+            "Women's political hysteria during wartime",
+          ],
+          ans: 1,
+          exp: "Hysterization is one of Foucault's four strategic directions — it defines the female body through its reproductive system, tying womanhood to biology and reproduction.",
+        },
+      ];
+
+      let mcqAnswered = 0;
+      let mcqCorrect = 0;
+
+      function buildMCQ() {
+        const container = document.getElementById("mcq-container");
+        container.innerHTML = "";
+        document.getElementById("mcq-total").textContent = mcqData.length;
+        document.getElementById("mcq-score").textContent = 0;
+        document.getElementById("mcq-final").textContent = "";
+        document.getElementById("mcq-progress").style.width = "0%";
+        mcqAnswered = 0;
+        mcqCorrect = 0;
+
+        mcqData.forEach((item, i) => {
+          const card = document.createElement("div");
+          card.className = "q-card";
+          card.innerHTML = `
+      <div class="q-num">Question ${i + 1} of ${mcqData.length}</div>
+      <div class="q-text">${item.q}</div>
+      <div class="options" id="opts-${i}">
+        ${item.opts.map((o, j) => `<button class="option-btn" onclick="checkMCQ(${i},${j},${item.ans})">${String.fromCharCode(65 + j)}. ${o}</button>`).join("")}
+      </div>
+      <div class="feedback" id="fb-${i}"></div>
+    `;
+          container.appendChild(card);
+        });
+      }
+
+      function checkMCQ(qIdx, chosen, correct) {
+        const opts = document.getElementById("opts-" + qIdx);
+        if (opts.querySelector(".correct") || opts.querySelector(".wrong"))
+          return; // already answered
+
+        const btns = opts.querySelectorAll(".option-btn");
+        btns.forEach((b) => (b.disabled = true));
+        btns[chosen].classList.add(chosen === correct ? "correct" : "wrong");
+        if (chosen !== correct) btns[correct].classList.add("correct");
+
+        const fb = document.getElementById("fb-" + qIdx);
+        fb.textContent =
+          (chosen === correct ? "Correct. " : "Incorrect. ") +
+          mcqData[qIdx].exp;
+        fb.classList.add("show");
+
+        mcqAnswered++;
+        if (chosen === correct) mcqCorrect++;
+        document.getElementById("mcq-score").textContent = mcqCorrect;
+        document.getElementById("mcq-progress").style.width =
+          (mcqAnswered / mcqData.length) * 100 + "%";
+
+        if (mcqAnswered === mcqData.length) {
+          document.getElementById("mcq-final").textContent =
+            `Final Score: ${mcqCorrect}/${mcqData.length} (${Math.round((mcqCorrect / mcqData.length) * 100)}%)`;
+        }
+      }
+
+      function resetMCQ() {
+        buildMCQ();
+      }
+
+      // ===================== MATCHING DATA =====================
+      const matchSets = [
+        {
+          term: "Defamiliarization",
+          def: "Presenting familiar things as strange or new to give readers fresh perspective",
+        },
+        {
+          term: "Volta",
+          def: "A turn or shift in tone or argument within a sonnet",
+        },
+        {
+          term: "Catharsis",
+          def: "Emotional release of pity and fear through tragedy, per Aristotle",
+        },
+        {
+          term: "Biopower",
+          def: "Power that produces life, health, and identity categories rather than merely prohibiting",
+        },
+        {
+          term: "Repressive Hypothesis",
+          def: "Belief that power's only relation to sex is prohibition and silence",
+        },
+        {
+          term: "Perverse Implantation",
+          def: "Process by which power creates identity labels such as 'the homosexual' as a species",
+        },
+        {
+          term: "Ars Erotica",
+          def: "Ancient or Eastern tradition where pleasure is a secret passed from master to student",
+        },
+        {
+          term: "Scientia Sexualis",
+          def: "Modern Western tradition where sexual truth is confessed to experts and classified",
+        },
+        {
+          term: "Positionality",
+          def: "Awareness of who is looking, from what vantage point, and at what object",
+        },
+        {
+          term: "Big Lady",
+          def: "Symbolic figure in Bobis's story who absorbs the family's grief so they survive",
+        },
+        {
+          term: "Nonlinear Narrative",
+          def: "Story structure that alternates between past and present, reflecting memory's cyclical nature",
+        },
+        {
+          term: "Iambic Pentameter",
+          def: "Poetic meter with ten syllables per line in alternating unstressed and stressed rhythm",
+        },
+        {
+          term: "Hysterization",
+          def: "Foucault's term for defining the female body through its reproductive function",
+        },
+        {
+          term: "Pedagogization",
+          def: "Foucault's term for the obsession with children's secret sexual habits",
+        },
+        {
+          term: "Ostranenie",
+          def: "Russian formalist term for defamiliarization, making the ordinary appear strange",
+        },
+        {
+          term: "Socialization (Foucault)",
+          def: "Using sex to manage birth rates and population at a national level",
+        },
+        {
+          term: "Psychiatrization",
+          def: "The creation of clinical lists of perversions such as fetishes and deviations",
+        },
+        {
+          term: "Discursive Explosion",
+          def: "Foucault's term for the massive increase in talk about sex since the 1700s",
+        },
+        {
+          term: "Juridico-Discursive Power",
+          def: "The old model of power as a limit or prohibition — power as a 'no'",
+        },
+        {
+          term: "Speaker's Benefit",
+          def: "The feeling of transgression or rebellion one gets simply from speaking about sex",
+        },
+        {
+          term: "Stanza",
+          def: "A grouped set of lines in a poem, equivalent to a paragraph in prose",
+        },
+        {
+          term: "Imagery",
+          def: "Detailed, sensory language used to paint a picture in the reader's mind",
+        },
+        {
+          term: "Merlie Alunan",
+          def: "Visayan poet known for writing in Waray-waray and Cebuano; Mother of Waray-waray Poetry",
+        },
+        {
+          term: "Richard Drew",
+          def: "Associated Press photographer who took 'The Falling Man' on September 11, 2001",
+        },
+        {
+          term: "Merlinda Bobis",
+          def: "Filipino-Australian author known for poetic prose exploring migration and diaspora",
+        },
+        {
+          term: "Rica",
+          def: "The six-year-old protagonist of 'The Sadness Collector' whose mother works abroad",
+        },
+        {
+          term: "Emotional Labor",
+          def: "The effort involved in maintaining cultural and personal connections across distance",
+        },
+        {
+          term: "Limited Third-Person POV",
+          def: "Narrative perspective that stays close to one character's internal feelings and thoughts",
+        },
+        {
+          term: "Figurative Language",
+          def: "Use of metaphors, similes, and other devices to create meaning beyond literal words",
+        },
+        {
+          term: "Wislawa Szymborska",
+          def: "Polish poet who wrote 'Photograph from September 11,' translated by Clare Cavanagh",
+        },
+      ];
+
+      let selectedTerm = null;
+      let matchedPairs = 0;
+      let shuffledDefs = [];
+
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function buildMatching() {
+        shuffledDefs = shuffle(matchSets.map((m, i) => ({ ...m, origIdx: i })));
+        matchedPairs = 0;
+        selectedTerm = null;
+        document.getElementById("match-score").textContent = 0;
+        document.getElementById("match-total").textContent = matchSets.length;
+        document.getElementById("match-final").textContent = "";
+        document.getElementById("match-progress").style.width = "0%";
+
+        const container = document.getElementById("matching-container");
+        container.innerHTML = `
+    <div class="matching-grid">
+      <div>
+        <div class="match-col-title">Terms</div>
+        ${matchSets.map((m, i) => `<div class="match-item" id="term-${i}" onclick="selectTerm(${i})">${m.term}</div>`).join("")}
+      </div>
+      <div>
+        <div class="match-col-title">Definitions</div>
+        ${shuffledDefs.map((m, i) => `<div class="match-item" id="def-${i}" onclick="selectDef(${i})">${m.def}</div>`).join("")}
+      </div>
+    </div>
+  `;
+      }
+
+      function selectTerm(idx) {
+        const el = document.getElementById("term-" + idx);
+        if (el.classList.contains("matched")) return;
+        document.querySelectorAll(".match-item").forEach((e) => {
+          if (!e.classList.contains("matched")) e.classList.remove("selected");
+        });
+        el.classList.add("selected");
+        selectedTerm = { type: "term", idx };
+      }
+
+      function selectDef(idx) {
+        const el = document.getElementById("def-" + idx);
+        if (el.classList.contains("matched")) return;
+
+        if (selectedTerm && selectedTerm.type === "term") {
+          // Check match
+          const termIdx = selectedTerm.idx;
+          const defOrigIdx = shuffledDefs[idx].origIdx;
+
+          if (termIdx === defOrigIdx) {
+            // Correct!
+            document
+              .getElementById("term-" + termIdx)
+              .classList.remove("selected");
+            document.getElementById("term-" + termIdx).classList.add("matched");
+            el.classList.add("matched");
+            matchedPairs++;
+            document.getElementById("match-score").textContent = matchedPairs;
+            document.getElementById("match-progress").style.width =
+              (matchedPairs / matchSets.length) * 100 + "%";
+            if (matchedPairs === matchSets.length) {
+              document.getElementById("match-final").textContent =
+                "All matched! Perfect score.";
+            }
+          } else {
+            // Wrong
+            document
+              .getElementById("term-" + termIdx)
+              .classList.add("wrong-match");
+            el.classList.add("wrong-match");
+            setTimeout(() => {
+              document
+                .getElementById("term-" + termIdx)
+                .classList.remove("wrong-match", "selected");
+              el.classList.remove("wrong-match");
+            }, 600);
+          }
+          selectedTerm = null;
+        } else {
+          document.querySelectorAll(".match-item").forEach((e) => {
+            if (!e.classList.contains("matched"))
+              e.classList.remove("selected");
+          });
+          el.classList.add("selected");
+          selectedTerm = { type: "def", idx };
+        }
+      }
+
+      function resetMatching() {
+        buildMatching();
+      }
+
+      // Init
+      buildMCQ();
+      buildMatching();
+    </script>
+  </body>
+</html>
